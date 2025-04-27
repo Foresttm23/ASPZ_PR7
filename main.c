@@ -5,7 +5,7 @@
 
 const char* directory_path = "SomeFiles";
 
-int check_file(const char* path);
+char* check_file(const char* path);
 
 int main() {
     DIR *dir = opendir(directory_path);
@@ -22,9 +22,9 @@ int main() {
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
             snprintf(filePath, sizeof(filePath), "%s/%s", directory_path, entry->d_name);
 
-            int result = check_file(filePath);
+            char* result = check_file(filePath);
 
-            printf("%s: %d\n", entry->d_name, result);
+            printf("%s: %s\n", entry->d_name, result);
         }
     }
     closedir(dir);
@@ -33,7 +33,10 @@ int main() {
 }
 
 
-int check_file(const char* path) {
+char* check_file(const char* path) {
+    static char time_str[100];
+    char check_str[100];
+
     struct stat file_stat;
     
     int err = stat(path, &file_stat);
@@ -45,5 +48,19 @@ int check_file(const char* path) {
     time_t now = time(NULL);
     time_t seven_days_ago = now - (7 * 24 * 60 * 60);
 
-    return file_stat.st_mtime >= seven_days_ago;
+    int check = file_stat.st_mtime >= seven_days_ago;
+
+    if (check) {
+        struct tm *time_info = localtime(&file_stat.st_mtime);
+        
+        strftime(time_str, sizeof(time_str), "%a %b %d %H:%M:%S %Y", time_info);
+
+        snprintf(check_str, sizeof(check_str), "\nModified: %d", check);
+        
+        strcat(time_str, check_str);
+
+        return time_str;
+    }
+    else
+        return 0;
 }
