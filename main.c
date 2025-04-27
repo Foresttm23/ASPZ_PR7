@@ -18,7 +18,6 @@ int main() {
 
     char filePath[100];
 
-
     while ((entry = readdir(dir)) != NULL) {
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
             snprintf(filePath, sizeof(filePath), "%s/%s", directory_path, entry->d_name);
