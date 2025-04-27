@@ -1,9 +1,7 @@
 #include <dirent.h> 
 #include <stdio.h> 
-#include <string.h>
-#include <sys/types.h>
+#include <time.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 const char* directory_path = "SomeFiles";
 
